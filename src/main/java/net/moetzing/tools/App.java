@@ -17,17 +17,17 @@ import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
 
 public class App {
+    public static final String DEFAULT_THREADS = "4";
+
     // required
     private static final Option regionOption = Option.builder().argName("region").longOpt("region").desc("the AWS region").hasArg().required().build();
     private static final Option bucketOption = Option.builder().argName("bucket").longOpt("bucket").desc("the AWS bucket").hasArg().required().build();
     private static final Option profileOption = Option.builder().argName("profile").longOpt("profile").desc("the AWS credentials profile").hasArg().required().build();
 
     // optional
-    private static final Option serviceEndpoint = Option.builder().argName("serviceEndpoint").longOpt("serviceEndpoint").desc("the AWS service endpoint region").hasArg().optionalArg(true).build();
-    private static final Option threadsOption = Option.builder().argName("threads").longOpt("threads").type(Integer.class).desc("the number of parallel requests").hasArg().optionalArg(true).build();
-    private static final Option prefixOption = Option.builder().argName("prefix").longOpt("prefix").desc("the AWS prefix").hasArg().optionalArg(true).build();
-
-    public static final String DEFAULT_THREADS = "4";
+    private static final Option serviceEndpoint = Option.builder().argName("serviceEndpoint").longOpt("serviceEndpoint").desc("the AWS service endpoint").hasArg().optionalArg(true).build();
+    private static final Option threadsOption = Option.builder().argName("threads").longOpt("threads").type(Integer.class).desc("the number of parallel requests, default is " + DEFAULT_THREADS).hasArg().optionalArg(true).build();
+    private static final Option prefixOption = Option.builder().argName("prefix").longOpt("prefix").desc("the AWS prefix (or subfolder), if not provided the whole content of the bucket will be deleted").hasArg().optionalArg(true).build();
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
@@ -120,6 +120,7 @@ public class App {
             System.out.println("Delete all files from bucket '" + bucketName + "' in region '" + clientRegion + "' under prefix '" + prefix + "' logged in with profile '" + profile + "'." );
         } else {
             System.out.println("Delete all files from bucket '" + bucketName + "' in region '" + clientRegion + "' logged in with profile '" + profile + "'." );
+            System.out.println("WARNING: The bucket will be empty afterwards!" );
         }
 
         System.out.println("Using " + threads + " threads.");
